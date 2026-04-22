@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="referrer" content="no-referrer"/>
+<title>Lumina Cinema — O cinema reimaginado</title>
+
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+
+<!-- Tailwind Config -->
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          lumina: {
+            bg: '#0A0A0A',
+            text: '#F5F5F7',
+            gold: '#E8C76B',
+            dark: '#1D1D1F',
+            blue: '#4A90E2',
+            card: '#141414',
+            border: '#2A2A2D',
+          }
+        },
+        fontFamily: {
+          display: ['Cormorant Garamond', 'serif'],
+          body: ['DM Sans', 'sans-serif'],
+        },
+        transitionTimingFunction: {
+          'apple': 'cubic-bezier(0.25, 0.1, 0.25, 1)',
+          'spring': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+        }
+      }
+    }
+  }
+</script>
+
+<!-- Estilos customizados -->
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body class="dark">
+
+<!-- Cursor customizado -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- =============================================
+     NAVBAR
+============================================= -->
+<nav id="navbar">
+  <div class="max-w-6xl mx-auto px-5 flex items-center justify-between h-14">
+    <!-- Logo -->
+    <button onclick="showTab('inicio')" class="cursor-none flex items-center gap-2 group" aria-label="Lumina Cinema início">
+      <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, #E8C76B, #C9A84C);">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L3 7v10l9 5 9-5V7L12 2z" fill="#0A0A0A"/>
+        </svg>
+      </div>
+      <span class="font-display font-light text-lg tracking-wide" style="letter-spacing:0.12em;">LUMINA</span>
+    </button>
+
+    <!-- Nav tabs desktop -->
+    <div class="hidden md:flex items-center gap-6" id="nav-tabs">
+      <button class="nav-tab active" onclick="showTab('inicio')" data-tab="inicio">Início</button>
+      <button class="nav-tab" onclick="showTab('emcartaz')" data-tab="emcartaz">Em Cartaz</button>
+      <button class="nav-tab" onclick="showTab('categorias')" data-tab="categorias">Categorias</button>
+      <button class="nav-tab" onclick="showTab('sessoes')" data-tab="sessoes">Sessões</button>
+      <button class="nav-tab" onclick="showTab('valores')" data-tab="valores">Valores</button>
+      <button class="nav-tab" onclick="showTab('cadastro')" data-tab="cadastro">Cadastro</button>
+    </div>
+
+    <!-- Menu mobile -->
+    <button id="mobile-menu-btn" class="md:hidden cursor-none p-2" aria-label="Menu">
+      <div class="space-y-1.5">
+        <span class="block w-5 h-px bg-lumina-text transition-all duration-300" id="m1"></span>
+        <span class="block w-5 h-px bg-lumina-text transition-all duration-300" id="m2"></span>
+      </div>
+    </button>
+  </div>
+
+  <!-- Mobile dropdown -->
+  <div id="mobile-menu" class="md:hidden overflow-hidden max-h-0 transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]">
+    <div class="px-5 py-3 flex flex-col gap-2 border-t" style="border-color: var(--border);">
+      <button class="nav-tab text-left py-2" onclick="showTab('inicio');closeMobileMenu()" data-tab-m="inicio">Início</button>
+      <button class="nav-tab text-left py-2" onclick="showTab('emcartaz');closeMobileMenu()" data-tab-m="emcartaz">Em Cartaz</button>
+      <button class="nav-tab text-left py-2" onclick="showTab('categorias');closeMobileMenu()" data-tab-m="categorias">Categorias</button>
+      <button class="nav-tab text-left py-2" onclick="showTab('sessoes');closeMobileMenu()" data-tab-m="sessoes">Sessões</button>
+      <button class="nav-tab text-left py-2" onclick="showTab('valores');closeMobileMenu()" data-tab-m="valores">Valores</button>
+      <button class="nav-tab text-left py-2" onclick="showTab('cadastro');closeMobileMenu()" data-tab-m="cadastro">Cadastro</button>
+    </div>
+  </div>
+</nav>
+
+<!-- =============================================
+     ABA: INÍCIO
+============================================= -->
+<div id="page-inicio" class="page active">
+
+  <!-- Hero Full Screen -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-bg-img"></div>
+    <div class="cinema-light"></div>
+    <div class="hero-overlay"></div>
+    <div id="particles-container" class="absolute inset-0 pointer-events-none"></div>
+
+    <div class="relative z-10 text-center max-w-4xl mx-auto px-6">
+      <p class="section-eyebrow mb-4" style="animation: hero-title-in 0.8s ease both;">Bem-vindo ao futuro do cinema</p>
+      <h1 class="hero-title mb-6">Cinema que<br/>transcende a tela.</h1>
+      <p class="text-base md:text-lg font-light mb-10 max-w-xl mx-auto" style="color:rgba(245,245,247,0.65); animation: hero-title-in 1.4s ease both; line-height:1.7;">
+        Uma experiência cinematográfica sem igual. Design, tecnologia e emoção reunidos em um único lugar.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4" style="animation: hero-title-in 1.6s ease both;">
+        <button class="btn-primary" onclick="showTab('emcartaz')">Ver filmes em cartaz</button>
+        <button class="btn-secondary" onclick="showTab('sessoes')">Escolher sessão</button>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2" style="animation: bounce 2s ease infinite;">
+      <div class="w-5 h-8 border border-white/20 rounded-full flex justify-center pt-1.5">
+        <div class="w-0.5 h-2 bg-white/40 rounded-full" style="animation: scroll-dot 2s ease infinite;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Em Destaque (Carrossel) -->
+  <section class="py-20 px-5 max-w-6xl mx-auto">
+    <div class="flex items-end justify-between mb-10 reveal">
+      <div>
+        <p class="section-eyebrow">Seleção especial</p>
+        <h2 class="section-title">Em Destaque</h2>
+      </div>
+      <button class="btn-secondary text-sm" onclick="showTab('emcartaz')" style="padding:0.6rem 1.2rem;">Ver todos</button>
+    </div>
+
+    <div class="relative overflow-hidden rounded-3xl reveal">
+      <div id="carousel-track" class="carousel-track">
+        <!-- Slide 1: Interestelar -->
+        <div class="carousel-item relative" style="aspect-ratio:16/7;">
+          <img src="https://image.tmdb.org/t/p/w1280/xJHokMbljvjADYdit5fK5VQsXEG.jpg" alt="Interestelar" referrerpolicy="no-referrer" crossorigin="anonymous" class="w-full h-full object-cover"/>
+          <div class="absolute inset-0" style="background:linear-gradient(to right, rgba(10,10,10,0.92) 0%, rgba(10,10,10,0.5) 55%, transparent 100%)"></div>
+          <div class="absolute left-6 md:left-10 top-1/2 -translate-y-1/2 max-w-xs md:max-w-sm px-2 md:px-0">
+            <span class="badge badge-gold mb-3">Obra-prima</span>
+            <h3 class="font-display text-2xl md:text-4xl font-light mb-2">Interestelar</h3>
+            <p class="text-xs md:text-sm mb-4 hidden sm:block" style="color:rgba(245,245,247,0.65); line-height:1.6;">Astronautas viajam além do nosso sistema solar em busca de um planeta capaz de garantir a sobrevivência da humanidade.</p>
+            <div class="flex items-center gap-2 mb-5">
+              <span class="stars">★★★★★</span>
+              <span class="text-xs" style="color:rgba(245,245,247,0.5);">4.9 · 2h 49min · Sci-Fi</span>
+            </div>
+            <button class="btn-primary text-sm" onclick="openMovieModal(0)" style="padding:0.7rem 1.5rem;">Ver detalhes</button>
+          </div>
+        </div>
+        <!-- Slide 2: Batman -->
+        <div class="carousel-item relative" style="aspect-ratio:16/7;">
+          <img src="https://image.tmdb.org/t/p/w1280/hkBaDkMWbLaf8B1lsWsKX7Ew3Xq.jpg" alt="Batman: O Cavaleiro das Trevas" referrerpolicy="no-referrer" crossorigin="anonymous" class="w-full h-full object-cover"/>
+          <div class="absolute inset-0" style="background:linear-gradient(to right, rgba(10,10,10,0.92) 0%, rgba(10,10,10,0.5) 55%, transparent 100%)"></div>
+          <div class="absolute left-6 md:left-10 top-1/2 -translate-y-1/2 max-w-xs md:max-w-sm px-2 md:px-0">
+            <span class="badge badge-gold mb-3">Lendário</span>
+            <h3 class="font-display text-2xl md:text-4xl font-light mb-2">O Cavaleiro<br/>das Trevas</h3>
+            <p class="text-xs md:text-sm mb-4 hidden sm:block" style="color:rgba(245,245,247,0.65); line-height:1.6;">Batman enfrenta o Coringa, um criminoso que instiga o caos absoluto em Gotham City.</p>
+            <div class="flex items-center gap-2 mb-5">
+              <span class="stars">★★★★★</span>
+              <span class="text-xs" style="color:rgba(245,245,247,0.5);">4.9 · 2h 32min · Ação</span>
+            </div>
+            <button class="btn-primary text-sm" onclick="openMovieModal(1)" style="padding:0.7rem 1.5rem;">Ver detalhes</button>
+          </div>
+        </div>
+        <!-- Slide 3: Oppenheimer -->
+        <div class="carousel-item relative" style="aspect-ratio:16/7;">
+          <img src="https://image.tmdb.org/t/p/w1280/fm6KqXpk3M2HVveHwCrBSSBaO0V.jpg" alt="Oppenheimer" referrerpolicy="no-referrer" crossorigin="anonymous" class="w-full h-full object-cover"/>
+          <div class="absolute inset-0" style="background:linear-gradient(to right, rgba(10,10,10,0.92) 0%, rgba(10,10,10,0.5) 55%, transparent 100%)"></div>
+          <div class="absolute left-6 md:left-10 top-1/2 -translate-y-1/2 max-w-xs md:max-w-sm px-2 md:px-0">
+            <span class="badge badge-gold mb-3">Oscar Melhor Filme</span>
+            <h3 class="font-display text-2xl md:text-4xl font-light mb-2">Oppenheimer</h3>
+            <p class="text-xs md:text-sm mb-4 hidden sm:block" style="color:rgba(245,245,247,0.65); line-height:1.6;">A história do físico que liderou o projeto que mudou o rumo da humanidade — e de sua própria alma.</p>
+            <div class="flex items-center gap-2 mb-5">
+              <span class="stars">★★★★★</span>
+              <span class="text-xs" style="color:rgba(245,245,247,0.5);">4.8 · 3h 00min · Drama</span>
+            </div>
+            <button class="btn-primary text-sm" onclick="openMovieModal(10)" style="padding:0.7rem 1.5rem;">Ver detalhes</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controles carrossel -->
+      <button id="prev-btn" onclick="prevSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center cursor-none transition-transform hover:scale-110">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>
+      </button>
+      <button id="next-btn" onclick="nextSlide()" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center cursor-none transition-transform hover:scale-110">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
+      </button>
+
+      <!-- Dots -->
+      <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+        <button class="carousel-dot w-6 h-1 rounded-full transition-all duration-300" style="background:var(--gold);" onclick="goSlide(0)"></button>
+        <button class="carousel-dot w-2 h-1 rounded-full transition-all duration-300" style="background:rgba(245,245,247,0.3);" onclick="goSlide(1)"></button>
+        <button class="carousel-dot w-2 h-1 rounded-full transition-all duration-300" style="background:rgba(245,245,247,0.3);" onclick="goSlide(2)"></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tagline section -->
+  <section class="py-20 text-center px-5 reveal">
+    <div class="max-w-2xl mx-auto">
+      <p class="font-display text-3xl md:text-5xl font-light leading-relaxed" style="color:rgba(245,245,247,0.85); line-height:1.4;">
+        "O cinema reimaginado.<br/><em style="color:var(--gold);">A experiência elevada ao máximo.</em>"
+      </p>
+    </div>
+  </section>
+</div><!-- /page-inicio -->
+
+<!-- =============================================
+     ABA: EM CARTAZ
+============================================= -->
+<div id="page-emcartaz" class="page">
+  <div class="pt-20 pb-20 px-5 max-w-6xl mx-auto">
+    <div class="pt-8 pb-10 reveal">
+      <p class="section-eyebrow">Programação atual</p>
+      <h2 class="section-title">Em Cartaz</h2>
+    </div>
+
+    <!-- Filtro rápido -->
+    <div class="flex flex-wrap gap-2 mb-10 reveal">
+      <button class="time-chip active" onclick="filterMovies(this, 'all')">Todos</button>
+      <button class="time-chip" onclick="filterMovies(this, 'acao')">Ação</button>
+      <button class="time-chip" onclick="filterMovies(this, 'drama')">Drama</button>
+      <button class="time-chip" onclick="filterMovies(this, 'scifi')">Sci-Fi</button>
+      <button class="time-chip" onclick="filterMovies(this, 'thriller')">Thriller</button>
+      <button class="time-chip" onclick="filterMovies(this, 'animacao')">Animação</button>
+    </div>
+
+    <!-- Grid de filmes -->
+    <div id="movies-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+    </div>
+  </div>
+</div>
+
+<!-- =============================================
+     ABA: CATEGORIAS
+============================================= -->
+<div id="page-categorias" class="page">
+  <div class="pt-20 pb-20 px-5 max-w-6xl mx-auto">
+    <div class="pt-8 pb-10 reveal">
+      <p class="section-eyebrow">Explore</p>
+      <h2 class="section-title">Categorias</h2>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-12" id="categories-grid">
+    </div>
+
+    <!-- Filmes filtrados por categoria -->
+    <div id="category-movies" class="hidden">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="font-display text-2xl font-light" id="category-title"></h3>
+        <button onclick="clearCategoryFilter()" class="text-xs text-lumina-gold hover:underline cursor-none">Limpar filtro</button>
+      </div>
+      <div id="category-movies-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+    </div>
+  </div>
+</div>
+
+<!-- =============================================
+     ABA: SESSÕES
+============================================= -->
+<div id="page-sessoes" class="page">
+  <div class="pt-20 pb-20 px-5 max-w-6xl mx-auto">
+    <div class="pt-8 pb-10 reveal">
+      <p class="section-eyebrow">Programação</p>
+      <h2 class="section-title">Sessões</h2>
+    </div>
+
+    <!-- Calendário horizontal -->
+    <div class="mb-10 reveal">
+      <div class="flex gap-3 overflow-x-auto pb-2" id="day-picker" style="scrollbar-width:none;"></div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="flex flex-wrap gap-3 mb-8 reveal">
+      <select id="time-filter" onchange="renderSessions()" class="form-input cursor-none" style="width:auto;padding:0.55rem 1rem;">
+        <option value="all">Todos os horários</option>
+        <option value="manha">Manhã (até 12h)</option>
+        <option value="tarde">Tarde (12h–18h)</option>
+        <option value="noite">Noite (após 18h)</option>
+      </select>
+      <select id="room-filter" onchange="renderSessions()" class="form-input cursor-none" style="width:auto;padding:0.55rem 1rem;">
+        <option value="all">Todas as salas</option>
+        <option value="1">Sala 1 — IMAX</option>
+        <option value="2">Sala 2 — 4DX</option>
+        <option value="3">Sala 3 — Convencional</option>
+        <option value="4">Sala 4 — VIP</option>
+      </select>
+    </div>
+
+    <!-- Lista de sessões -->
+    <div id="sessions-list" class="space-y-3 reveal"></div>
+  </div>
+</div>
+
+<!-- =============================================
+     ABA: VALORES
+============================================= -->
+<div id="page-valores" class="page">
+  <div class="pt-20 pb-20 px-5 max-w-6xl mx-auto">
+    <div class="pt-8 pb-12 text-center reveal">
+      <p class="section-eyebrow">Planos e preços</p>
+      <h2 class="section-title">Valores</h2>
+      <p class="mt-3 text-sm" style="color:rgba(245,245,247,0.55);">Escolha a experiência perfeita para você</p>
+    </div>
+
+    <!-- Cards de planos -->
+    <div class="grid md:grid-cols-3 gap-6 mb-16 max-w-4xl mx-auto">
+
+      <!-- Padrão -->
+      <div class="plan-card reveal">
+        <div class="mb-6">
+          <p class="text-xs uppercase tracking-widest mb-2" style="color:rgba(245,245,247,0.4);">Padrão</p>
+          <div class="flex items-baseline gap-1">
+            <span class="text-4xl font-display font-light">R$ 0</span>
+            <span class="text-sm" style="color:rgba(245,245,247,0.45);">/mês</span>
+          </div>
+        </div>
+        <ul class="space-y-3 mb-8 text-sm">
+          <li class="flex items-center gap-2"><span style="color:var(--gold)">✓</span> Compra de ingressos online</li>
+          <li class="flex items-center gap-2"><span style="color:var(--gold)">✓</span> Seleção de assentos</li>
+          <li class="flex items-center gap-2"><span style="color:rgba(245,245,247,0.3)">–</span> <span style="color:rgba(245,245,247,0.3)">Desconto em combos</span></li>
+          <li class="flex items-center gap-2"><span style="color:rgba(245,245,247,0.3)">–</span> <span style="color:rgba(245,245,247,0.3)">Pré-venda exclusiva</span></li>
+          <li class="flex items-center gap-2"><span style="color:rgba(245,245,247,0.3)">–</span> <span style="color:rgba(245,245,247,0.3)">Sala VIP ilimitada</span></li>
+        </ul>
+        <button class="btn-secondary w-full" style="border-radius:12px;padding:0.75rem;">Começar grátis</button>
+      </div>
+
+      <!-- VIP (destaque) -->
+      <div class="plan-card featured reveal reveal-delay-1">
+        <div class="absolute top-4 right-4">
+          <span class="badge badge-gold">Mais popular</span>
+        </div>
+        <div class="mb-6">
+          <p class="text-xs uppercase tracking-widest mb-2" style="color:var(--gold);opacity:0.8;">VIP</p>
+          <div class="flex items-baseline gap-1">
+            <span class="text-4xl font-display font-light gold-text">R$ 39</span>
+            <span class="text-sm" style="color:rgba(245,245,247,0.45);">,90/mês</span>
+          </div>
+        </div>
+        <ul class="space-y-3 mb-8 text-sm">
+          <li class="flex items-center gap-2"><span style="color:var(--gold)">✓</span> Tudo do plano Padrão</li>
+          <li class="flex items-center gap-2"><span style="color:var(--gold)">✓</span> 20% de desconto em combos</li>
+          <li class="flex items-center gap-2"><span style="color:var(--gold)">✓</span> Pré-venda exclusiva</li>
+          <li class="flex items-center gap-2"><span style="color:var(--gold)">✓</span> 2 ingressos VIP/mês</li>
+          <li class="flex items-center gap-2"><span style="color:rgba(245,245,247,0.3)">–</span> <span style="color:rgba(245,245,247,0.3)">Sala VIP ilimitada</span></li>
+        </ul>
+        <button class="btn-primary w-full" style="border-radius:12px;padding:0.75rem;" onclick="showTab('cadastro')">Escolher VIP</button>
+      </div>
+
+      <!-- Premium Anual -->
+      <div class="plan-card reveal reveal-delay-2">
+        <div class="mb-6">
+          <p class="text-xs uppercase tracking-widest mb-2" style="color:rgba(245,245,247,0.4);">Premium Anual</p>
+          <div class="flex items-baseline gap-1">
+            <span class="text-4xl font-display font-light">R$ 299</span>
+            <span class="text-sm" style="color:rgba(245,245,247,0.45);">/ano</span>
+          </div>
+          <p class="text-xs mt-1" style="color:var(--gold);">Equivale a R$ 24,90/mês</p>
+        </div>
+        <ul class="space-y-3 mb-8 text-sm">
+          <li class="flex items-center gap-2"><span style="color:var(--gold)">✓</span> Tudo do plano VIP</li>
+          <li class="flex items-center gap-2"><span style="color:var(--gold)">✓</span> 30% de desconto sempre</li>
+          <li class="flex items-center gap-2"><span style="color:var(--gold)">✓</span> Sala VIP ilimitada</li>
+          <li class="flex items-center gap-2"><span style="color:var(--gold)">✓</span> Concierge exclusivo</li>
+          <li class="flex items-center gap-2"><span style="color:var(--gold)">✓</span> Eventos pré-estreia</li>
+        </ul>
+        <button class="btn-secondary w-full" style="border-radius:12px;padding:0.75rem;" onclick="showTab('cadastro')">Escolher Premium</button>
+      </div>
+    </div>
+
+    <!-- Tabela comparativa -->
+    <div class="reveal max-w-4xl mx-auto">
+      <h3 class="font-display text-2xl font-light mb-6 text-center">Comparativo completo</h3>
+      <div class="glass rounded-2xl overflow-hidden">
+        <table class="w-full text-sm">
+          <thead>
+            <tr style="border-bottom:1px solid var(--border);">
+              <th class="text-left p-4 font-medium" style="color:rgba(245,245,247,0.5); font-weight:400;">Benefício</th>
+              <th class="p-4 text-center font-medium" style="color:rgba(245,245,247,0.5); font-weight:400;">Padrão</th>
+              <th class="p-4 text-center font-medium gold-text font-medium">VIP</th>
+              <th class="p-4 text-center font-medium" style="color:rgba(245,245,247,0.5); font-weight:400;">Premium</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid rgba(42,42,45,0.5);">
+              <td class="p-4">Compra online</td>
+              <td class="p-4 text-center gold-text">✓</td>
+              <td class="p-4 text-center gold-text">✓</td>
+              <td class="p-4 text-center gold-text">✓</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(42,42,45,0.5);">
+              <td class="p-4">Desconto em combos</td>
+              <td class="p-4 text-center" style="color:rgba(245,245,247,0.3);">–</td>
+              <td class="p-4 text-center gold-text">20%</td>
+              <td class="p-4 text-center gold-text">30%</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(42,42,45,0.5);">
+              <td class="p-4">Pré-venda exclusiva</td>
+              <td class="p-4 text-center" style="color:rgba(245,245,247,0.3);">–</td>
+              <td class="p-4 text-center gold-text">✓</td>
+              <td class="p-4 text-center gold-text">✓</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(42,42,45,0.5);">
+              <td class="p-4">Ingressos VIP/mês</td>
+              <td class="p-4 text-center" style="color:rgba(245,245,247,0.3);">–</td>
+              <td class="p-4 text-center gold-text">2</td>
+              <td class="p-4 text-center gold-text">Ilimitado</td>
+            </tr>
+            <tr>
+              <td class="p-4">Eventos pré-estreia</td>
+              <td class="p-4 text-center" style="color:rgba(245,245,247,0.3);">–</td>
+              <td class="p-4 text-center" style="color:rgba(245,245,247,0.3);">–</td>
+              <td class="p-4 text-center gold-text">✓</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =============================================
+     ABA: CADASTRO
+============================================= -->
+<div id="page-cadastro" class="page">
+  <div class="pt-20 pb-20 px-5 max-w-xl mx-auto">
+    <div class="pt-8 pb-10 reveal">
+      <p class="section-eyebrow">Junte-se a nós</p>
+      <h2 class="section-title">Criar conta<br/><em style="color:var(--gold);">Lumina</em></h2>
+    </div>
+
+    <!-- Formulário -->
+    <div id="form-wrapper" class="reveal">
+      <form id="signup-form" onsubmit="handleSubmit(event)" novalidate>
+
+        <div class="grid grid-cols-1 gap-0">
+
+          <div class="form-field">
+            <label class="form-label" for="f-nome">Nome completo</label>
+            <input type="text" id="f-nome" class="form-input" placeholder="Seu nome completo" autocomplete="name"/>
+            <p class="form-error" id="err-nome">Por favor, insira seu nome completo.</p>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="f-email">E-mail</label>
+            <input type="email" id="f-email" class="form-input" placeholder="seu@email.com" autocomplete="email"/>
+            <p class="form-error" id="err-email">Insira um e-mail válido.</p>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="f-cpf">CPF</label>
+            <input type="text" id="f-cpf" class="form-input" placeholder="000.000.000-00" maxlength="14" oninput="maskCPF(this)"/>
+            <p class="form-error" id="err-cpf">CPF inválido.</p>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="f-nasc">Data de nascimento</label>
+            <input type="date" id="f-nasc" class="form-input" style="color-scheme:dark;"/>
+            <p class="form-error" id="err-nasc">Data de nascimento inválida.</p>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="f-senha">Senha</label>
+            <div class="relative">
+              <input type="password" id="f-senha" class="form-input pr-12" placeholder="Mínimo 8 caracteres"/>
+              <button type="button" onclick="togglePassword('f-senha', this)" class="absolute right-3 top-1/2 -translate-y-1/2 cursor-none opacity-50 hover:opacity-100 transition-opacity bg-transparent border-none">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <p class="form-error" id="err-senha">A senha deve ter pelo menos 8 caracteres.</p>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="f-confirma">Confirmar senha</label>
+            <input type="password" id="f-confirma" class="form-input" placeholder="Repita a senha"/>
+            <p class="form-error" id="err-confirma">As senhas não coincidem.</p>
+          </div>
+
+        </div>
+
+        <!-- Preferências -->
+        <div class="mb-8">
+          <label class="form-label mb-3">Preferências de filmes</label>
+          <div class="flex flex-wrap gap-2">
+            <input type="checkbox" id="p-acao" class="pref-check" value="acao"/><label for="p-acao" class="pref-label cursor-none">🎬 Ação</label>
+            <input type="checkbox" id="p-drama" class="pref-check" value="drama"/><label for="p-drama" class="pref-label cursor-none">🎭 Drama</label>
+            <input type="checkbox" id="p-scifi" class="pref-check" value="scifi"/><label for="p-scifi" class="pref-label cursor-none">🚀 Sci-Fi</label>
+            <input type="checkbox" id="p-terror" class="pref-check" value="terror"/><label for="p-terror" class="pref-label cursor-none">👻 Terror</label>
+            <input type="checkbox" id="p-anim" class="pref-check" value="animacao"/><label for="p-anim" class="pref-label cursor-none">✨ Animação</label>
+            <input type="checkbox" id="p-thriller" class="pref-check" value="thriller"/><label for="p-thriller" class="pref-label cursor-none">🔍 Thriller</label>
+            <input type="checkbox" id="p-romance" class="pref-check" value="romance"/><label for="p-romance" class="pref-label cursor-none">💫 Romance</label>
+            <input type="checkbox" id="p-comedia" class="pref-check" value="comedia"/><label for="p-comedia" class="pref-label cursor-none">😄 Comédia</label>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" id="submit-btn" class="btn-primary w-full" style="border-radius:14px;padding:1rem;font-size:0.9rem;letter-spacing:0.05em;">
+          <span id="btn-text">Criar conta Lumina</span>
+          <span id="btn-spinner" class="hidden">
+            <svg class="spinner inline-block" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+          </span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Tela de sucesso -->
+    <div id="success-screen">
+      <div class="checkmark-circle">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#E8C76B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20,6 9,17 4,12"/>
+        </svg>
+      </div>
+      <h3 class="font-display text-3xl font-light mb-3">Bem-vindo ao<br/><em style="color:var(--gold);">Lumina Cinema!</em></h3>
+      <p class="text-sm mb-6" style="color:rgba(245,245,247,0.6);line-height:1.7;">Sua conta foi criada com sucesso. Prepare-se para uma experiência cinematográfica sem igual.</p>
+      <button class="btn-primary" onclick="showTab('emcartaz')">Explorar filmes</button>
+    </div>
+  </div>
+</div>
+
+<!-- =============================================
+     MODAL DE FILME
+============================================= -->
+<div id="movie-modal" role="dialog" aria-modal="true" aria-label="Detalhes do filme">
+  <div class="modal-backdrop" onclick="closeMovieModal()"></div>
+  <div class="modal-content" id="modal-inner">
+    <button class="modal-close" onclick="closeMovieModal()" aria-label="Fechar modal">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<!-- =============================================
+     FOOTER
+============================================= -->
+<footer style="border-top:1px solid var(--border);padding:2.5rem 1.25rem;text-align:center;">
+  <p class="font-display text-2xl font-light mb-1">LUMINA</p>
+  <p class="text-xs" style="color:rgba(245,245,247,0.3);letter-spacing:0.06em;">© 2025 Lumina Cinema. Todos os direitos reservados.</p>
+</footer>
+
+<!-- JavaScript -->
+<script src="script.js"></script>
+</body>
+</html>
